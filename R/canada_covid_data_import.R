@@ -295,9 +295,9 @@ get_canada_combined_provincial_data <- function(use_UofS=FALSE){
     filter(Cases!=0)
 }
 
-#' import and recode canadian case data from StatCan table 13-10-0766
+#' import and recode Canadian case data from StatCan table 13-10-0766
 #' @return a wide format data frame with one row per case with gender, age group,
-#' hospitilization and ICU status, transmission pathway, mortality, and onset of symptoms data
+#' hospitalization and ICU status, transmission pathway, mortality, and onset of symptoms data
 #' Data is limited to case information forwarded by provinces to Canada Health
 #' @export
 get_cansim_case_data <- function(){
@@ -305,7 +305,7 @@ get_cansim_case_data <- function(){
     mutate(GEO=gsub("^Canada .+$","Canada",GEO)) %>%
     normalize_cansim_values()
 
-  hospitilization_recodes <- c(
+  hospitalization_recodes <- c(
     "1"="Yes",
     "2"="No",
     "9"="Not Stated"
@@ -364,8 +364,8 @@ get_cansim_case_data <- function(){
                 names_from = `Case information`,values_from = VALUE) %>%
     mutate(Date=paste_date(REF_DATE,`Episode date - month`,`Episode date - day`)) %>%
     mutate(Date2=paste_date(REF_DATE,`Date case was last updated - month`,`Date case was last updated - day`)) %>%
-    recode_field("Hospitalization",hospitilization_recodes) %>%
-    recode_field("Intensive care unit",hospitilization_recodes) %>%
+    recode_field("Hospitalization",hospitalization_recodes) %>%
+    recode_field("Intensive care unit",hospitalization_recodes) %>%
     recode_field("Transmission",transmission_recodes) %>%
     recode_field("Death",death_recodes) %>%
     recode_field("Age group",age_recodes) %>%
@@ -373,7 +373,7 @@ get_cansim_case_data <- function(){
 }
 
 
-#' import and recode canadian case data from StatCan table 13-10-0767, use `get_cansim_case_data`
+#' import and recode Canadian case data from StatCan table 13-10-0767, use `get_cansim_case_data`
 #' for getting data from the more up-to-date table 13-10-0766
 #' @return a wide format data frame with one row per case with gender, age group,
 #' hospitilization and ICU status, transmission pathway, mortality, and onset of symptoms data
@@ -383,7 +383,7 @@ get_cansim_old_case_data <- function(){
   data <- get_cansim("13-10-0767") %>%
     normalize_cansim_values()
 
-  hospitilization_recodes <- c(
+  hospitalization_recodes <- c(
     "1"="Yes",
     "2"="No",
     "7"="Unknown",
@@ -433,15 +433,15 @@ get_cansim_old_case_data <- function(){
                 names_from = `Case information`,values_from = VALUE) %>%
     mutate(Date=as.Date(paste0(REF_DATE,"-",`Episode date - month`,"-",`Episode date - day`))) %>%
     mutate(Date2=as.Date(paste0(REF_DATE,"-",`Date case was last updated - month`,"-",`Date case was last updated - day`))) %>%
-    recode_field("Hospitalization",hospitilization_recodes) %>%
-    recode_field("Intensive care unit",hospitilization_recodes) %>%
+    recode_field("Hospitalization",hospitalization_recodes) %>%
+    recode_field("Intensive care unit",hospitalization_recodes) %>%
     recode_field("Transmission",transmission_recodes) %>%
     recode_field("Status",status_recodes) %>%
     recode_field("Age group",age_recodes) %>%
     recode_field("Gender",gender_recodes)
 }
 
-#' import and recode ontario case data from Ontario Open Data. Tends to have a day lag
+#' import and recode Ontario case data from Ontario Open Data. Tends to have a day lag
 #' @return a wide format data frame with one row per case with Health Region, gender, age group,
 #' transmission pathway, status, and onset of symptoms data
 #' @export
@@ -452,7 +452,7 @@ get_ontario_case_data <- function(){
     mutate(Date=as.Date(Accurate_Episode_Date))
 }
 
-#' import and recode ontario case data from Alberta Open Data. Tends to have a day lag
+#' import and recode Alberta case data from Alberta Open Data. Tends to have a day lag
 #' @return a wide format data frame with one row per case with Health Region, gender, age group,
 #' status, case type
 #' @export
@@ -517,9 +517,9 @@ get_toronto_neighbourhood_cases <- function(d){
              as.integer)
 }
 
-#' get Toronto neihgbourhood geographies
+#' get Toronto neighbourhood geographies
 #' @param refresh data is cached for the duration of the session, set to `TRUE` to refresh the cache
-#' @return a simple feature collection with Toronto neighbrouhoods
+#' @return a simple feature collection with Toronto neighbourhoods
 #' @export
 get_toronto_neighbourhood_geos <- function(refresh=FALSE){
   path<-file.path(tempdir(),"toronto_nbhd_geos")
@@ -537,9 +537,9 @@ get_toronto_neighbourhood_geos <- function(refresh=FALSE){
     mutate(Code=as.integer(Code),ID=as.character(ID))
 }
 
-#' get Toronto neihgbourhood census data 2016
+#' get Toronto neighbourhood census data 2016
 #' @param refresh data is cached for the duration of the session, set to `TRUE` to refresh the cache
-#' @return a data frame with toronto neighbourhood census data
+#' @return a data frame with Toronto neighbourhood census data
 #' @export
 get_toronto_neighbourhood_census_data <- function(refresh=FALSE){
   tmp<-file.path(tempdir(),"toronto_hoods_census.csv")
@@ -565,7 +565,7 @@ get_toronto_neighbourhood_census_data <- function(refresh=FALSE){
 #' get Health Region geographies
 #' @param refresh data is cached for the duration of the session, set to `TRUE` to refresh the cache
 #' @return a simple feature collection with 2018 Health Region data
-#' This misses at least one 2020 change to Ontario Health regoins
+#' This misses at least one 2020 change to Ontario Health regions
 #' @export
 get_health_region_geographies_2018 <- function(refresh=FALSE){
   path=file.path(tempfile(),"health_region_geos")
@@ -614,9 +614,9 @@ bc_ha_name_lookup <- c(
   "595" = "Northern"
 )
 
-#' aggregate health regions to health autorities in BC
+#' aggregate health regions to health authorities in BC
 #' @param data dataframe with fields `GeoUID` = HR_UID and `Name`
-#' @return a dataframe with GeoUID and Name adjusted to BC Helath Authorities instead of Health Regions
+#' @return a dataframe with GeoUID and Name adjusted to BC Health Authorities instead of Health Regions
 replace_BC_health_region_geocodes <- function(data) {
   data %>%
     mutate(GeoUID = ifelse(grepl("^59",GeoUID),substr(GeoUID,1,3),GeoUID)) %>%
@@ -630,7 +630,7 @@ ontario_hr_name_lookup <- c(
 
 
 
-#' aggregate health regions to health autorities in ON
+#' aggregate health regions to health authorities in ON
 #' @param data dataframe with fields `GeoUID` = HR_UID and `Name`
 #' @return a dataframe with GeoUID and Name adjusted to current names
 replace_ON_health_region_geocodes <- function(data){
@@ -650,7 +650,7 @@ saskatoon_hr_name_lookup <- c(
   "4706" = "Saskatoon"
 )
 
-#' aggregate health regions to health autorities in SK
+#' aggregate health regions to health authorities in SK
 #' @param data dataframe with fields `GeoUID` = HR_UID and `Name`
 #' @return a dataframe with GeoUID and Name adjusted to current names
 replace_SK_health_region_geocodes <- function(data){
@@ -663,7 +663,7 @@ replace_SK_health_region_geocodes <- function(data){
 }
 
 
-#' aggregate health regions to health autorities BC, SK, ON
+#' aggregate health regions to health authorities BC, SK, ON
 #' @param data dataframe with fields `GeoUID` = HR_UID and `Name`
 #' @return a dataframe with GeoUID and Name adjusted to current names
 #' @export

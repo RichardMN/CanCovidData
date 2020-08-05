@@ -89,9 +89,9 @@ get_country_timeline_ecdc_jhs_data <- function(){
 
   # Merge the two sets of data, then join in the `Population 2019`,`countryCode`
   full_list <- bind_rows(ecdc_data %>%
-                           filter(Date<=min(jhs_data$Date)) %>%
-                           mutate(Recovered=0) %>%
-                           select(names(jhs_data)),
+                         filter(Date<=min(jhs_data$Date)) %>%
+                         mutate(Recovered=0) %>%
+                         select(names(jhs_data)),
                          jhs_data) %>%
     mutate(Active=Confirmed-Deaths-Recovered) %>%
     group_by(Country) %>%

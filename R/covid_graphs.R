@@ -1,5 +1,5 @@
 #' Generate growth rate graph
-#' @param data data fram with column `region` for each group, `Date` with dates and `total`, for fitting the growth rates
+#' @param data data frame with column `region` for each group, `Date` with dates and `total`, for fitting the growth rates
 #' @param window_width width for rolling window
 #' @return a `ggplot` object
 #' @export
@@ -125,4 +125,3 @@ total_graph <- function(data) {
 #' @import ggplot2
 
 NULL
-
